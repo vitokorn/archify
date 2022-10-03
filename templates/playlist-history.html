@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+    {% block content %}
+
+                <script>function handleClick(cb) {
+  console.log("Clicked, new value = " + cb.checked);
+  let check = {
+      checkb: cb.checked,
+      playlistid: window.location.pathname
+  }
+  let response = fetch('/spotify/values/', {
+      method: 'POST',
+      body: JSON.stringify(check)
+  });
+}</script>
+        <p>CRON toggle checked by default. It means that every time when playlists will be updated,this playlist also will take changes</p>
+          <div class="tab-container">
+              <div class="tab-wrapper">
+    <label class="switch">
+      <input type="checkbox" {% if user.cron == true %} checked {% elif user.cron == false %} {% endif %} onchange="handleClick(this)">
+      <span class="slider"></span>
+    </label>
+{#              {% for curr in currr %}#}
+{#                  <input type="radio" name="tab" id="#{{ curr.timestamp }}" checked/>#}
+{#                    <label class="tab-label" for="#{{ curr.timestamp }}">{{ curr.timestamp }}</label>#}
+{#                    <div class="tab-item" id="{{ curr.timestamp }}">#}
+{#                        <div class="flex-item">#}
+{#                        <img style="width: 150px" src="{{ curr.images[0].url }}">#}
+{#                        <div class="container-fluid">#}
+{#                            <div style="font-size: x-large"><a href="{{ curr.external_urls.spotify }}"> {{ curr.name }}</a></div>#}
+{#                            <div>{{ curr.description }}</div>#}
+{#                        </div>#}
+{#                        </div>#}
+{#                <br>#}
+{#                <table class="table table-striped">#}
+{#                    <thead>#}
+{#                        <tr>#}
+{#                            <th>Name</th>#}
+{#                            <th>Artist</th>#}
+{#                            <th>Album</th>#}
+{#                        </tr>#}
+{#                    </thead>#}
+{#                <tbody>#}
+{##}
+{#                {% for t in curr['tracks']['items'] %}#}
+{#                    <tr>#}
+{#                                <td><a href="{{ t.track.external_urls.spotify }}"> {{ t.track.name }}</a></td>#}
+{#                                    <td>#}
+{#                                        {% for a in t['track']['artists'] %}#}
+{#                                        <a href="{{ a.external_urls.spotify }}"> {{ a.name }},</a>#}
+{#                                    {% endfor %}#}
+{#                                    </td>#}
+{#                        <td> <a href="{{ t.track.album.external_urls.spotify }}">{{ t.track.album.name }}</a></td>#}
+{#                    </tr>#}
+{##}
+{#                    {% endfor %}#}
+{#                                  </tbody>#}
+{#                    </table>#}
+{#                    </div>#}
+{#                {% endfor %}#}
+                  {% for curr in currr %}
+            {% for col in coll %}
+                {% if curr.timestamp == col.timestamp %}
+                <input type="radio" name="tab" id="#{{ curr.timestamp.strftime('%Y-%m-%d') }}" checked/>
+                    <label class="tab-label" for="#{{ curr.timestamp.strftime('%Y-%m-%d') }}">{{ curr.timestamp.strftime('%Y-%m-%d') }}</label>
+                {% else %}
+                <input type="radio" name="tab" id="#{{ col.timestamp.strftime('%Y-%m-%d') }}"/>
+                <label class="tab-label" for="#{{ col.timestamp.strftime('%Y-%m-%d') }}">{{ col.timestamp.strftime('%Y-%m-%d') }}</label>
+                {% endif %}
+                <div class="tab-item" id="{{ col.timestamp }}">
+                    <div class="flex-item">
+                    <img style="width: 150px" src="{{ col.images[0].url }}">
+                    <div class="container-fluid">
+                        <div style="font-size: x-large"><a href="{{ col.external_urls.spotify }}"> {{ col.name }}</a></div>
+                        <div>{{ col.description }}</div>
+                        {% if session['username'] %}
+                        <form action="{{ url_for('publish')}}" method="POST">
+                            <input id="url" name="url" hidden value="{{ col.external_urls.spotify }}">
+                            <input id="timestamp" name="timestamp" hidden value="{{ col.timestamp }}">
+                        <button>Publish</button>
+                        </form>
+                        <form action="{{ url_for('delete')}}" method="POST">
+                            <input id="url" name="url" hidden value="{{ col.external_urls.spotify }}">
+                            <input id="timestamp" name="timestamp" hidden value="{{ col.timestamp }}">
+                        <button class="deletebtn">Delete</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    </div>
+                    <br>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Preview</th>
+                                <th>Name</th>
+                                <th>Artist</th>
+                                <th>Album</th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                    {% for t in col['tracks']['items'] %}
+                        <tr>
+                        <td><audio preload="none" style="background: cornflowerblue" controls src="{{ t.track.preview_url }}">
+                        </audio></td>
+                        {% if t.track.external_urls %}
+                                    <td><a href="{{ t.track.external_urls.spotify }}"> {{ t.track.name }}</a></td>
+                                        <td>
+                                            {% for a in t['track']['artists'] %}
+                                            <a href="{{ a.external_urls.spotify }}"> {{ a.name }}</a>
+                                        {% endfor %}
+                                        </td>
+                        {% endif %}
+                            <td>{% if t.track.album %} <a href="{{ t.track.album.external_urls.spotify }}">{{ t.track.album.name }} {% endif %}</a></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                    </table>
+                    </div>
+            {% endfor %}
+              {% endfor %}
+            </div>
+          </div>
+            </ul>
+    {% endblock %}

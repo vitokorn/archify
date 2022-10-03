@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+              {% block content %}
+                  {% if alert %}
+                    <div class="alert-success" role="alert">Success</div>
+                  {% endif %}
+                  <form action="{{ url_for('playlist')}}" method="POST">
+                          <label for="playlistid">Playlist URL</label>
+                      <input type="text" id="playlistid" name="playlistid" placeholder="Input Spotify url or uri">
+                      <button type="submit" class="">Submit</button>
+                  </form>
+                  <a href="{{ url_for('playlists')}}"><button class="">Grab all playlists</button></a>
+                  <br>
+                  {% for p in playlists %}
+                      <div><a href="/library/playlist/{{ p.playlist }}">{{ p.name }}</a> </div>
+                  {% endfor %}
+              {% endblock %}

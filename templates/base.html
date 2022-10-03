@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link type="text/css" rel="stylesheet" href="/static/css/normalize.css"  media="screen,projection"/>
+    <link type="text/css" rel="stylesheet" href="/static/css/styles.css"  media="screen,projection"/>
+    <meta charset="UTF-8">
+    <title>Archify</title>
+</head>
+<body>
+<header>
+    <img class="logo" src="/static/images/archives-document-svgrepo-com.svg">
+    <nav>
+        <ul class="nav_links">
+            <li><a href="/">Home</a></li>
+            <li><a href="">Search</a></li>
+            <li><a href="/library">Library</a></li>
+            <li><a href="/spotify/playlists/update/">Update Library</a></li>
+        </ul>
+    </nav>
+    {% if session['username'] %}
+        <div class="dropdown">
+        <button class="dropbtn">Hello, {{ session['nickname'] }}</button>
+            <div class="dropdown-content">
+                <a href="">Account</a>
+                <a href="/spotify/logout/">Logout</a>
+            </div>
+        </div>
+        {% else %}
+    <a class="cta" href="/spotify/login/"><button>Login</button></a>
+    {% endif %}
+</header>
+      <div class="container">
+      <div class="row">
+              {% block content %}
+              {% endblock %}
+      </div>
+      </div>
+{#<script type="text/javascript" src="../static/js/materialize.js"></script>#}
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    {% for c in l %}
+        <div class="col-2">
+        <img class="img-fluid" style="width: 200px" src="{{ c.images[0].url }}">
+        <div><a href="/library/playlist/{{ c.external_urls.spotify | replace("https://open.spotify.com/playlist/","") }}">{{ c.name }}</a></div>
+     </div>
+    {% endfor %}
+{% endblock %}
